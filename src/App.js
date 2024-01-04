@@ -26,14 +26,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <ul className="title-list">
-          <li style={{ display: "inline-block", marginRight: "5px" }}>
-            <h1 className="title">Omilia</h1>
-          </li>
-          <li style={{ display: "inline-block" }}>
-            <p>Built using React.js & Firebase.</p>
-          </li>
-        </ul>
+        <nav class="navbar bg-body-tertiary">
+          <div class="container-fluid">
+            <span class="title">Omilia</span>
+            <span class="navbar-text">
+              <SignOut />
+            </span>
+          </div>
+        </nav>
       </header>
       <section>{user ? <ChatRoom /> : <SignIn />}</section>
     </div>
@@ -103,7 +103,26 @@ function ChatMessage(props) {
   return (
     <div className={`message ${messageClass}`}>
       <img className="pfp" src={photoURL} alt="User" />
-      <p>{text}</p>
+      <div className="text-container">
+        <p>{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function UploadFiles() {
+  const [fileUrl, setFileUrl] = useState(null);
+  const onFileChange = async (e) => {
+    const file = e.target.files[0];
+    const storageRef = firebase.storage().ref();
+    const fileRef = storageRef.child(file.name);
+    await fileRef.put(file);
+    setFileUrl(await fileRef.getDownloadURL());
+  };
+  return (
+    <div>
+      <input type="file" onChange={onFileChange} />
+      <img src={fileUrl} alt="User" />
     </div>
   );
 }
